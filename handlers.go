@@ -24,6 +24,7 @@ func RootHandler(w http.ResponseWriter, request *http.Request) {
 
 	// Access the `page` query param using `request.Form.Get()`
 	// This returns the first value associated with the key.
+	// https://stackoverflow.com/a/28159544
 	if page := request.Form.Get("page"); page != "" {
 		responseData["page"] = page
 	}
