@@ -16,7 +16,13 @@ func init() {
 }
 
 func main() {
+	// Create router.
 	router := mux.NewRouter().StrictSlash(true)
-	router.HandleFunc("/key", RootEndpoint).Methods("GET")
+
+	// Configure routes.
+	router.HandleFunc("/", RootHandler).Methods("Get")
+	router.HandleFunc("/key", GenerateKeyHandler).Methods("GET")
+
+	// Run server.
 	log.Fatal(http.ListenAndServe(bind, router))
 }
