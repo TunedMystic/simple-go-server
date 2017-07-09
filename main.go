@@ -26,7 +26,7 @@ type JediHandler struct {
 }
 
 func (j *JediHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprintf("My name is %v and I am a Jedi\n", j.Name)))
+	w.Write([]byte(fmt.Sprintf("My name is %v and I am a Jedi.\n", j.Name)))
 }
 
 // DateMiddleware struct.
