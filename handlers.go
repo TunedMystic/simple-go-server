@@ -8,8 +8,14 @@ import (
 	"time"
 )
 
-// RootHandler returns some basic information in JSON format.
-func RootHandler(w http.ResponseWriter, request *http.Request) {
+// ExampleHandler returns the Url path in a simple message.
+func ExampleHandler(w http.ResponseWriter, request *http.Request) {
+	msg := fmt.Sprintf("The route (%v) is strong with this one\n", request.URL.Path)
+	w.Write([]byte(msg))
+}
+
+// InfoHandler returns some basic information in JSON format.
+func InfoHandler(w http.ResponseWriter, request *http.Request) {
 	// Process form data.
 	request.ParseForm()
 	// Make response map.
@@ -44,5 +50,16 @@ func RootHandler(w http.ResponseWriter, request *http.Request) {
 // GenerateKeyHandler returns a randomly generated string.
 func GenerateKeyHandler(w http.ResponseWriter, request *http.Request) {
 	message := fmt.Sprintf("Random Key: %v\n", RandString(24))
+	w.Write([]byte(message))
+}
+
+// NotFound handler is used when no route matches.
+type NotFound struct {
+	Prefix string
+}
+
+func (h *NotFound) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	message := fmt.Sprintf("[%v] This is not the page you're looking for. Move along.\n", h.Prefix)
+	w.WriteHeader(http.StatusNotFound)
 	w.Write([]byte(message))
 }

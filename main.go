@@ -16,45 +16,28 @@ func init() {
 	rand.Seed(time.Now().Unix())
 }
 
-func testHandler(w http.ResponseWriter, request *http.Request) {
-	w.Write([]byte("This is not the route you are looking for. **Waves hand**\n"))
-}
-
-// JediHandler struct
-type JediHandler struct {
-	Name string
-}
-
-func (j *JediHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(fmt.Sprintf("My name is %v and I am a Jedi.\n", j.Name)))
-}
-
-// DateMiddleware struct.
-type DateMiddleware struct {
-	handler http.Handler
-}
-
-func (d *DateMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	now := time.Now().Format(time.UnixDate)
-	fmt.Printf("[date-middleware] %v\n", now)
-	d.handler.ServeHTTP(w, r)
-}
-
 func main() {
 	// Create router.
 	router := mux.NewRouter().StrictSlash(true)
 
-	// Configure routes.
-	router.HandleFunc("/", RootHandler).Methods("Get")
-	router.HandleFunc("/key", GenerateKeyHandler).Methods("Get")
-	router.Handle("/test", http.HandlerFunc(testHandler)).Methods("Get")
+	// Configure routes with 'HandleFunc'.
+	router.HandleFunc("/", InfoHandler).Methods("Get")
+	router.HandleFunc("/key", GenerateKeyHandler).Methods("Post")
 
-	// Create a new custom handler.
-	jh := &JediHandler{"Anakin"}
-	router.Handle("/jedi", jh).Methods("Get")
+	// Configure routes with 'Handle'.
+	router.Handle("/team", http.HandlerFunc(ExampleHandler)).Methods("Get")
 
 	// Connect a route to a handler, with custom middleware.
-	router.Handle("/test2", &DateMiddleware{http.HandlerFunc(testHandler)}).Methods("Get")
+	router.Handle("/about", &DateMiddleware{
+		http.HandlerFunc(ExampleHandler),
+	}).Methods("Get")
+
+	// Connect a route to a handler, with a middleware helper function.
+	router.Handle("/pricing", NewDateMiddleware(ExampleHandler))
+
+	// 404 NotFound handler
+	nf := &NotFound{"404"}
+	router.NotFoundHandler = nf
 
 	// Run server.
 	fmt.Printf("Running server on %v...\n", bind)
