@@ -38,6 +38,7 @@ func TestInfoHandler2(t *testing.T) {
 	// Build query params.
 	queryArgs := url.Values{}
 	queryArgs.Add("page", "1")
+	queryArgs.Add("sort", "name")
 	// Alternative.
 	// queryArgs := url.Values{
 	//     "page": {"1"}, "sort", {"name"},
@@ -73,5 +74,10 @@ func TestInfoHandler2(t *testing.T) {
 	// Check that the response has the 'page' key.
 	if _, ok := responseData["page"]; !ok {
 		t.Errorf("Expected 'page' in JSON response.")
+	}
+
+	// Check that the response has the 'sort' key.
+	if _, ok := responseData["sort"]; !ok {
+		t.Errorf("Expected 'sort' in JSON response.")
 	}
 }
